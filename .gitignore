@@ -1,0 +1,31 @@
+# Environment
+.env
+backend/.env
+frontend/.env
+frontend/src/environments/environment.local.ts
+
+# .NET
+backend/**/bin/
+backend/**/obj/
+backend/**/*.user
+backend/**/TestResults/
+backend/**/coverage/
+backend/**/*.DotSettings.user
+
+# Node / Angular
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/coverage/
+frontend/.sass-cache/
+
+# IDE
+.vs/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*

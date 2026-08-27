@@ -1,0 +1,226 @@
+@use '@angular/material' as mat;
+
+html {
+  color-scheme: light;
+
+  @include mat.theme((
+    color: (
+      primary: mat.$green-palette,
+      tertiary: mat.$green-palette,
+      theme-type: light
+    ),
+    typography: Roboto,
+    density: 0
+  ));
+}
+
+:root {
+  --lib-black: #161616;
+  --lib-black-soft: #222222;
+  --lib-green: #31c2a0;
+  --lib-green-dark: #24967b;
+  --lib-green-soft: #e6f8f3;
+  --lib-surface: #f4f7f6;
+  --lib-card: #ffffff;
+  --lib-muted: #5b6460;
+  --lib-line: #e4ece8;
+  --mat-sys-primary: #31c2a0;
+  --mat-sys-on-primary: #ffffff;
+  --mat-sys-primary-container: #c8f3e7;
+  --mat-sys-on-primary-container: #161616;
+  --mdc-filled-button-container-color: #31c2a0;
+  --mdc-filled-button-label-text-color: #ffffff;
+  --mdc-protected-button-container-color: #31c2a0;
+  --mdc-protected-button-label-text-color: #ffffff;
+  --mat-button-filled-container-color: #31c2a0;
+  --mat-button-filled-label-text-color: #ffffff;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background: var(--lib-surface);
+  color: var(--lib-black);
+}
+
+.breadcrumb {
+  margin: 0 0 8px;
+  color: var(--lib-muted);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+
+.page-title {
+  margin: 0 0 20px;
+  font-size: 28px;
+  font-weight: 500;
+}
+
+.page-title .muted {
+  display: block;
+  margin-top: 6px;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.toolbar-card,
+.table-card {
+  background: var(--lib-card);
+  border: none;
+  box-shadow: 0 3px 11px 0 rgba(49, 194, 160, 0.12), 0 1px 8px 0 rgba(22, 22, 22, 0.06);
+}
+
+.toolbar-card {
+  margin-bottom: 24px;
+}
+
+.toolbar-card-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 8px 8px 0 !important;
+}
+
+.toolbar-card-content .add-button {
+  margin-left: auto;
+}
+
+.add-button {
+  background: var(--lib-green) !important;
+  color: #fff !important;
+  height: 40px;
+  padding: 0 16px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.add-button mat-icon {
+  margin-right: 8px;
+}
+
+.search-field {
+  width: min(280px, 100%);
+  margin-bottom: -1.25em;
+}
+
+.table-card .mat-mdc-card-content {
+  padding: 0;
+}
+
+.full-table {
+  width: 100%;
+}
+
+.full-table .mat-mdc-header-cell {
+  color: var(--lib-muted);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 500;
+  padding: 14px 16px;
+}
+
+.full-table .mat-mdc-cell {
+  padding: 14px 16px;
+  color: #3d3d3d;
+}
+
+.full-table .mat-mdc-row:hover {
+  background: var(--lib-green-soft);
+}
+
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 48px 16px;
+  color: var(--lib-muted);
+}
+
+.error {
+  color: var(--lib-black);
+  background: var(--lib-green-soft);
+  border-left: 4px solid var(--lib-green);
+  padding: 8px 12px;
+  margin: 0 0 16px;
+}
+
+.row-actions {
+  display: inline-flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0;
+  margin-left: -8px;
+}
+
+.full-table .mat-column-actions.mat-mdc-header-cell,
+.full-table .mat-column-actions.mat-mdc-cell {
+  text-align: left;
+}
+
+.row-actions button {
+  color: var(--lib-muted);
+}
+
+.row-actions button:hover {
+  color: var(--lib-green-dark);
+  background: var(--lib-green-soft);
+}
+
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 0 10px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--lib-black);
+  color: #fff;
+}
+
+.status-chip.active,
+.status-chip.admin,
+.status-chip.in-stock {
+  background: var(--lib-green);
+}
+
+.library-dialog .mat-mdc-dialog-container {
+  --mdc-dialog-container-shape: 12px;
+}
+
+.form-grid {
+  display: grid;
+  gap: 4px;
+  min-width: min(420px, 100%);
+  padding-top: 8px;
+}
+
+.form-grid .full {
+  width: 100%;
+}
+
+.snack-success {
+  --mdc-snackbar-container-color: var(--lib-black);
+  --mdc-snackbar-supporting-text-color: #ffffff;
+  --mat-snack-bar-button-color: #31c2a0;
+}
+
+.mat-mdc-unelevated-button.logout,
+.logout.mat-mdc-unelevated-button {
+  --mdc-filled-button-container-color: var(--lib-green);
+  --mdc-filled-button-label-text-color: var(--lib-black);
+  --mat-button-filled-label-text-color: var(--lib-black);
+  background: var(--lib-green) !important;
+  color: var(--lib-black) !important;
+}
+
+.logout .mat-icon {
+  color: var(--lib-black) !important;
+}

@@ -1,0 +1,254 @@
+---
+description: Global project rules for the library system
+alwaysApply: true
+---
+
+# Library System Project Rules
+
+This is a professional library management system.
+
+Prioritize correctness, Clean Architecture, TDD, maintainability, testability, and a reproducible local setup.
+
+## Informal user story
+
+As a librarian, I register members and titles and lend up to three available titles per member in one loan, so the library never over-commits stock. As a member, I only see books I can actually borrow right now.
+
+## Priorities
+
+Prioritize:
+
+- correctness of loan stock rules
+- Clean Architecture (domain independent of EF and HTTP)
+- clarity
+- maintainability
+- testability
+- reproducible local setup
+- developer-friendly commands
+- professional UX without unnecessary complexity
+
+## Avoid overengineering
+
+Do not add:
+
+- ASP.NET Identity UI
+- refresh-token rotation or social login
+- Redis, queues, or event sourcing
+- Kubernetes
+- client self-service loans, reservations, waitlists
+- fines, due dates, or renewals
+- global frontend state libraries
+- MediatR or a generic repository unless it clearly simplifies this codebase
+
+Keep the product focused and complete for catalog, member, and loan operations. Do not under-engineer the core workflow.
+
+## Stack
+
+Frontend:
+
+- Angular (standalone components)
+- TypeScript
+- Angular Material
+- HttpClient with a JWT interceptor
+- unit tests for guards, API error parsing, and loan retry mapping
+
+Use Angular Material for layout, tables, forms, dialogs, and feedback states. Use a black-and-green admin shell (header and sidebar). Create/edit in dialogs from an Add button; confirm deletes. Do not ship a plain list with an always-visible form.
+
+Backend:
+
+- ASP.NET Core Web API
+- Clean Architecture: Domain, Application, Infrastructure, Api
+- Entity Framework Core with MySQL (Pomelo)
+- JWT Bearer authentication, roles `Admin` and `Client`
+- Swagger UI for API exploration
+- xUnit tests for domain, application, infrastructure, and API
+
+Tooling:
+
+- Docker for MySQL, backend, and frontend
+- docker-compose for full-stack local execution
+- justfile for common commands
+- environment/config files for dynamic ports, connection strings, and API URLs
+
+## Business rules
+
+- Admin has full access (users, books, loans).
+- Clients may only list books with available stock (`Quantity > 0`).
+- Only an admin may create, list, or return loans.
+- Each loan may include at most 3 distinct titles.
+- Each loan may include only one unit of each title.
+- A title may be loaned only when `Quantity >= 1`.
+- A loan is persisted only when every selected title is available (atomic).
+- If any title is unavailable, return `INSUFFICIENT_STOCK` with details so the admin can remove those titles and retry.
+- Returning a loan restores available stock for each item, never above `TotalQuantity`.
+
+`TotalQuantity` is how many copies the library owns. `Quantity` is how many copies are on the shelf now and is the value used for loan checks. Available copies cannot exceed total units.
+
+## Command standards
+
+Use a `justfile` as the main command interface.
+
+Expected commands:
+
+~~~bash
+just install
+just debug
+just run
+just run-backend
+just run-frontend
+just test
+just test-backend
+just test-frontend
+just build
+just docker-build
+just docker-down
+~~~
+
+The README must document these commands.
+
+Prefer `just` commands in documentation instead of long raw command chains, while still documenting underlying commands when useful.
+
+## Docker standards
+
+Dockerize everything:
+
+- backend must have a Dockerfile
+- frontend must have a Dockerfile
+- root must have docker-compose.yml including MySQL with a healthcheck
+- `docker compose up --build` should run the full application locally
+
+The Docker setup should be simple and easy to run locally.
+
+Do not introduce production-grade orchestration complexity.
+
+## Environment and configuration standards
+
+Use environment/config files for dynamic configuration.
+
+Required files:
+
+~~~txt
+.env.example
+backend/.env.example
+frontend/.env.example
+~~~
+
+Do not commit real `.env` files.
+
+Root `.env.example` should define shared Docker/local defaults such as:
+
+~~~env
+BACKEND_PORT=8080
+FRONTEND_PORT=4200
+API_BASE_URL=http://localhost:8080
+CORS_ALLOWED_ORIGINS=http://localhost:4200
+SWAGGER_ENABLED=true
+~~~
+
+Backend configuration should support:
+
+- API URLs/ports
+- MySQL connection string
+- JWT secret, issuer, audience, expiry
+- allowed CORS origins
+- Swagger enabled/disabled flag
+- environment name
+
+Frontend configuration should support:
+
+- backend API base URL through a build-time environment file
+
+Configuration should be documented in README.md.
+
+## README documentation standard
+
+Every meaningful change must be reflected in README.md.
+
+The README must include:
+
+- project overview and user story
+- tech stack
+- setup instructions
+- environment variables
+- how to install dependencies
+- how to run backend
+- how to run frontend
+- how to run the full stack with Docker
+- how to run tests
+- how to use the justfile
+- seeded credentials
+- API examples
+- Swagger/OpenAPI information
+- error response examples
+- design decisions
+- assumptions
+- AI usage summary linking to docs/AI_USAGE.md
+
+If implementation behavior changes, update the README in the same change.
+
+## API conventions
+
+Version routes under `/api/v1`.
+
+Anonymous:
+
+- `POST /api/v1/auth/login`
+- `GET /health`
+
+Authorized:
+
+- `GET /api/v1/auth/me`
+- `GET /api/v1/books` (clients see available stock only)
+
+Admin:
+
+- user CRUD
+- book CRUD
+- loan create, list, return
+
+Error envelope:
+
+~~~json
+{
+  "error": {
+    "code": "INSUFFICIENT_STOCK",
+    "message": "One or more titles do not have enough available copies for this loan.",
+    "details": [
+      {
+        "bookId": "00000000-0000-0000-0000-000000000001",
+        "title": "Dune",
+        "available": 0
+      }
+    ]
+  }
+}
+~~~
+
+## Workflow
+
+Before coding:
+
+- create or update the plan
+- keep scope small
+- prefer simple implementation over clever implementation
+
+During coding:
+
+- make small changes
+- write tests for loan policy before or with the implementation (TDD)
+- run tests after meaningful changes
+- update README when behavior, commands, configuration, or setup changes
+- keep docs/AI_USAGE.md updated with concise prompts used
+
+Before considering work complete:
+
+- run backend tests
+- run frontend tests
+- run frontend build
+- run Docker full-stack setup when Docker is available
+- review README
+- review Swagger
+- run the principal-review skill
+
+Do not claim something works unless tests/builds were executed.
+
+All code, documentation, skills, UI copy, and seed data must be in English.
